@@ -90,9 +90,9 @@ class MainPipeline:
             # Resize frame for consistent processing
             frame = cv2.resize(frame, (800, 450))
 
-            frame_blur = cv2.GaussianBlur(frame, (7, 7), 0)
+            frame_blur = cv2.GaussianBlur(frame, (7,7), 0)
             # 1. Background subtraction -> foreground mask
-            fg_mask = self.bg.apply(frame)
+            fg_mask = self.bg.apply(frame_blur)
 
             # 2. Motion detection -> bounding boxes
             boxes, cleaned_mask = self.motion.detect(fg_mask)
@@ -115,5 +115,5 @@ class MainPipeline:
         cv2.destroyAllWindows()
         
 if __name__ == "__main__":
-    pipeline = MainPipeline(video_path="data/raw/Recording_2025-12-01_134944.mp4")
+    pipeline = MainPipeline(video_path="data/raw/YT_Record2.mp4")
     pipeline.run()
