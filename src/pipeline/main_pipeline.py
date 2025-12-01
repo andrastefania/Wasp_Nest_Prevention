@@ -114,5 +114,5 @@ class MainPipeline:
         cv2.destroyAllWindows()
         
 if __name__ == "__main__":
-    pipeline = MainPipeline(video_path="data/raw/Recording_2025-12-01_104015.mp4")
+    pipeline = MainPipeline(video_path="data/raw/Recording_2025-12-01_134944.mp4")
     pipeline.run()
