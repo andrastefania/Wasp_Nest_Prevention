@@ -44,9 +44,9 @@ class MainPipeline:
 
         # 1. Initialize the background subtractor
         self.bg = BackgroundSubtractor(
-            history=500,
-            var_threshold=16,
-            detect_shadows=True
+            history=50,
+            var_threshold=50,
+            detect_shadows=False
         )
 
         # 2. Initialize the motion detector
@@ -90,6 +90,7 @@ class MainPipeline:
             # Resize frame for consistent processing
             frame = cv2.resize(frame, (800, 450))
 
+            frame_blur = cv2.GaussianBlur(frame, (7, 7), 0)
             # 1. Background subtraction -> foreground mask
             fg_mask = self.bg.apply(frame)
 
