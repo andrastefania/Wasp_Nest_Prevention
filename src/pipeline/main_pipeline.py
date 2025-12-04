@@ -44,16 +44,14 @@ class MainPipeline:
 
         # 1. Initialize the background subtractor
         self.bg = BackgroundSubtractor(
-            history=50,
-            var_threshold=50,
+            history=500,
+            var_threshold=16,
             detect_shadows=False
         )
 
         # 2. Initialize the motion detector
         self.motion = MotionDetector(
-            min_contour_area=20,
-            erode_iterations=1,
-            dilate_iterations=2
+            min_contour_area=20
         )
 
         # 3. Decide input source (file or webcam)
@@ -115,5 +113,5 @@ class MainPipeline:
         cv2.destroyAllWindows()
         
 if __name__ == "__main__":
-    pipeline = MainPipeline(video_path="data/raw/YT_Record2.mp4")
+    pipeline = MainPipeline(video_path="data/raw/Gemini_Record3_longer.mp4")
     pipeline.run()
