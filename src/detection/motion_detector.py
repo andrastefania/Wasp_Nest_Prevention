@@ -42,25 +42,78 @@ class MotionDetector:
 
         return thresh
 
-    def detect(self, fg_mask):
-        """
-        Cleans the mask, finds contours, filters them, and returns bounding boxes.
-        """
+    # def detect(self, fg_mask):
+    #     """
+    #     Cleans the mask, finds contours, filters them, and returns bounding boxes.
+    #     """
 
+    #     cleaned = self.clean_mask(fg_mask)
+
+    #     contours, _ = cv2.findContours(cleaned, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    #     boxes = []
+
+    #     for contour in contours:
+    #         area = cv2.contourArea(contour)
+
+    #         # Ignore tiny contours (noise)
+    #         if area < self.min_contour_area:
+    #             continue
+
+    #         x, y, w, h = cv2.boundingRect(contour)
+    #         boxes.append((x, y, w, h))
+
+    #     return boxes, cleaned
+
+    def detect(self, fg_mask, frame=None):
         cleaned = self.clean_mask(fg_mask)
-
         contours, _ = cv2.findContours(cleaned, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         boxes = []
 
         for contour in contours:
             area = cv2.contourArea(contour)
-
-            # Ignore tiny contours (noise)
             if area < self.min_contour_area:
                 continue
 
             x, y, w, h = cv2.boundingRect(contour)
-            boxes.append((x, y, w, h))
+            
+            # --- FILTER LOGIC ---
+            is_wasp = True # Assume valid until proven otherwise
+
+            # 1. Shape Check
+            aspect_ratio = w / float(h)
+            if aspect_ratio > 3.0 or aspect_ratio < 0.3:
+                is_wasp = False
+
+            # 2. Color/Contrast Check (The code we discussed)
+            if is_wasp and frame is not None:
+                # ... [Insert your Yellow/Contrast Logic here] ...
+                roi = frame[y:y+h, x:x+w]
+                hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+
+                # Define Wasp Yellow (Adjust these slightly if needed)
+                lower_yellow = np.array([18, 50, 50])
+                upper_yellow = np.array([35, 255, 255])
+                
+                mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)
+                
+                # Count yellow pixels
+                yellow_pixels = cv2.countNonZero(mask_yellow)
+                total_pixels = w * h
+                yellow_ratio = yellow_pixels / total_pixels
+
+                if yellow_ratio < 0.05:
+                    is_wasp = False
+
+            # --- DECISION TIME ---
+            if is_wasp:
+                boxes.append((x, y, w, h))
+            else:
+                # OPTIONAL: Paint the rejected shadow BLACK on the mask
+                # "cleaned" is the image we are editing
+                # "-1" means fill the shape
+                cv2.drawContours(cleaned, [contour], -1, 0, -1) 
 
         return boxes, cleaned
+

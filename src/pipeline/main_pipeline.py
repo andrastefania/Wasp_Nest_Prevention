@@ -93,7 +93,8 @@ class MainPipeline:
             fg_mask = self.bg.apply(frame_blur)
 
             # 2. Motion detection -> bounding boxes
-            boxes, cleaned_mask = self.motion.detect(fg_mask)
+            boxes, cleaned_mask = self.motion.detect(fg_mask, frame)
+
 
             # 3. Draw bounding boxes on frame
             for (x, y, w, h) in boxes:
