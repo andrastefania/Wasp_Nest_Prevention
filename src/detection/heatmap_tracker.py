@@ -93,7 +93,7 @@ class HeatmapTracker:
 
         self.max_heat = 100
         self.add_amount = 10.0
-        self.cooldown_rate = 0.002
+        self.cooldown_rate = 0.02
         self.base_radius = 18
 
         self.map = np.zeros((height, width), dtype=np.float32)
