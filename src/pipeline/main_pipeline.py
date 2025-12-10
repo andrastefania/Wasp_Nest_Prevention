@@ -140,5 +140,5 @@ if __name__ == "__main__":
     pipeline = MainPipeline(video_path="data/raw/Gemini_Record3_longer.mp4")
 
     # ALEGE MODUL:
-    #pipeline.run(mode="debug")
-    pipeline.run(mode="prevention")
+    pipeline.run(mode="debug")
+    #pipeline.run(mode="prevention")
